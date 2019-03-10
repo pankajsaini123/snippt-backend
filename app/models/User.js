@@ -1,10 +1,10 @@
-'use strict' 
+'use strict'
 /**
  * Module Dependencies
  */
 const mongoose = require('mongoose'),
   Schema = mongoose.Schema;
- 
+
 let userSchema = new Schema({
   userId: {
     type: String,
@@ -32,10 +32,15 @@ let userSchema = new Schema({
     type: String,
     default: ''
   },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
   createdOn :{
     type:Date,
     default:""
   }
+  
 
 
 })

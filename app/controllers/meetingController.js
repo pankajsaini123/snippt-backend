@@ -44,7 +44,7 @@ let getAllMeetingsFunction = (req, res) => {
     let findMeetings = (userDetails) => {
         return new Promise((resolve, reject) => {
 
-            
+
             if (userDetails.isAdmin == true) {
                 MeetingModel.find({ hostId: req.params.userId })
                     .select()
@@ -103,7 +103,7 @@ let getAllMeetingsFunction = (req, res) => {
             res.send(err);
         })
 
-}// end getAllMeetingsFunction 
+}// end getAllMeetingsFunction
 
 
 
@@ -212,7 +212,7 @@ let deleteMeetingFunction = (req, res) => {
             res.send(err);
         })
 
-}// end deleteMeetingFunction 
+}// end deleteMeetingFunction
 
 
 /* Start Update Meeting details */
@@ -271,7 +271,7 @@ let updateMeetingFunction = (req, res) => {
                               <br> Hi , ${newMeetingObj.participantName} .
                               <br> ${newMeetingObj.hostName} Updated the meeting: ${options.meetingTopic}.
                               <br>
-                                      
+
                               <div class="card" style="width: 18rem;">
                                   <div class="card-body">
                                       <h5 class="card-title">Agenda</h5>
@@ -285,14 +285,14 @@ let updateMeetingFunction = (req, res) => {
                                       <p class="card-text">${options.meetingStartDate}</p>
                                   </div>
                               </div>
-                              
+
                               <div class="card" style="width: 18rem;">
                                   <div class="card-body">
                                       <h5 class="card-title">Where</h5>
                                       <p class="card-text">${options.meetingPlace}</p>
                                   </div>
                               </div>
-        
+
                               `
                     }
 
@@ -321,11 +321,11 @@ let updateMeetingFunction = (req, res) => {
             res.send(err);
         })
 
-}// end updateMeetingFunction 
+}// end updateMeetingFunction
 
 
 
-// start addMeetingFunction 
+// start addMeetingFunction
 /* params: meetingTopic,hostId,hostName,participantId,participantName,participantEmail,
            meetingStartDate,meetingEndDate,meetingDescription,meetingPlace
 */
@@ -334,7 +334,7 @@ let addMeetingFunction = (req, res) => {
 
     let validateUserInput = () => {
         return new Promise((resolve, reject) => {
-            if (req.body.syudentId && req.body.meetingDate && req.body.timeSlot) {
+            if (req.body.studentId && req.body.meetingDate && req.body.timeSlot) {
                 resolve(req)
             } else {
                 logger.error('Field Missing During Meeting Creation', 'meetingController: addMeeting()', 5)
@@ -350,8 +350,8 @@ let addMeetingFunction = (req, res) => {
             let newMeeting = new MeetingModel({
                 meetingId: shortid.generate(),
                 studentId: req.body.studentId,
-                studentName: req.body.studentName,               
-                meetingDate: req.body.meetingDate,               
+                studentName: req.body.studentName,
+                meetingDate: req.body.meetingDate,
                 timeSlot: req.body.timeSlot,
                 createdOn: time.now()
             })
@@ -373,7 +373,7 @@ let addMeetingFunction = (req, res) => {
                         subject: `Meeting Confirmed: ${newMeetingObj.meetingTopic}`,
                         html: `<h3> Your meeting is planned! </h3>
                               <br> Hi , ${newMeetingObj.hostName} has scheduled a meeting via Lets Meet.
-                              <br>  
+                              <br>
 
                             <div class="card" style="width: 18rem;">
                               <div class="card-body">
@@ -382,14 +382,14 @@ let addMeetingFunction = (req, res) => {
                               </div>
                             </div>
 
-                              
+
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
                                     <h5 class="card-title">When</h5>
                                     <p class="card-text">${newMeetingObj.meetingStartDate}</p>
                                 </div>
                             </div>
-                            
+
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
                                     <h5 class="card-title">Where</h5>
@@ -423,7 +423,7 @@ let addMeetingFunction = (req, res) => {
             res.send(err);
         })
 
-}// end addMeetingFunction 
+}// end addMeetingFunction
 
 
 

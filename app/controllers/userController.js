@@ -14,8 +14,8 @@ const emailLib = require('../libs/emailLib');
 /* Models */
 const UserModel = mongoose.model('User')
 
-const applicationUrl = 'http://localhost:4200/user' 
- 
+const applicationUrl = 'http://localhost:4200/user'
+
 /* Get all user Details */
 let getAllUser = (req, res) => {
     UserModel.find({ emailVerified: true })
@@ -90,7 +90,7 @@ let deleteUser = (req, res) => {
 
 /* Edit user details */
 /* params : userId
-   body : firstName,lastName,mobileNumber 
+   body : firstName,lastName,mobileNumber
 */
 
 let editUser = (req, res) => {
@@ -144,7 +144,7 @@ let verifyEmailFunction = (req, res) => {
                         resolve(result)
                     }
                 })
-        
+
             } else {
                 let apiResponse = response.generate(true, '"userId" parameter is missing', 400, null)
                 reject(apiResponse)
@@ -193,7 +193,7 @@ let verifyEmailFunction = (req, res) => {
 
 
 
-// start user signup function 
+// start user signup function
 /* params : firstname,lastName,email,mobileNumber,password
 */
 
@@ -219,7 +219,7 @@ let signUpFunction = (req, res) => {
         })
     }// end validate user input */
 
-    let createUser = () => { 
+    let createUser = () => {
         return new Promise((resolve, reject) => {
             UserModel.findOne({ "userName": req.body.userName })
                 .exec((err, retrievedUserDetails) => {
@@ -227,7 +227,7 @@ let signUpFunction = (req, res) => {
                         logger.error(err.message, 'userController: createUser', 10)
                         let apiResponse = response.generate(true, 'Failed To Create User', 500, null)
                         reject(apiResponse)
-                    } else if (check.isEmpty(retrievedUserDetails)) {
+                    } else if (check.isEmpty(retrievedUserDetails)) { 
                         console.log(req.body)
                         let newUser = new UserModel({
                             userId: shortid.generate(),
@@ -235,6 +235,7 @@ let signUpFunction = (req, res) => {
                             lastName: req.body.lastName || '',
                             userName: req.body.userName,
                             email: req.body.email.toLowerCase(),
+                            isAdmin: req.body.isAdmin,
                             password: passwordLib.hashpassword(req.body.password),
                             createdOn: time.now()
                         })
@@ -252,10 +253,10 @@ let signUpFunction = (req, res) => {
                                     email: newUserObj.email,
                                     name: newUserObj.firstName + ' ' + newUserObj.lastName,
                                     subject: 'Welcome to Lets Meet ',
-                                    html: `<b> Dear ${newUserObj.firstName}</b><br> Hope you are doing well. 
+                                    html: `<b> Dear ${newUserObj.firstName}</b><br> Hope you are doing well.
                                     <br>Welcome to our Meeting Planner App <br>
                                     Please click on following link to verify your account with Lets Meet.<br>
-                                    <br> <a href="http://api.coolcoder.xyz/api/v1/users/verify-email/${newUserObj.userId}">Click Here</a>                                     
+                                    <br> <a href="http://api.coolcoder.xyz/api/v1/users/verify-email/${newUserObj.userId}">Click Here</a>
                                     `
                                 }
 
@@ -288,9 +289,9 @@ let signUpFunction = (req, res) => {
             res.send(err);
         })
 
-}// end user signup function 
+}// end user signup function
 
-// start of login function 
+// start of login function
 /* params : email,password
 */
 
@@ -300,7 +301,7 @@ let loginFunction = (req, res) => {
         return new Promise((resolve, reject) => {
             if (req.body.userName && req.body.password) {
                // console.log("req body email is there");
-                //console.log(req.body);
+                console.log(req.body);
                 UserModel.findOne({"userName": req.body.userName }, (err, userDetails) => {
                     /* handle the error here if the User is not found */
                     if (err) {
@@ -330,11 +331,9 @@ let loginFunction = (req, res) => {
     }
 
     let validatePassword = (retrievedUserDetails) => {
-        console.log("validatePassword");
         return new Promise((resolve, reject) => {
             passwordLib.comparePassword(req.body.password, retrievedUserDetails.password, (err, isMatch) => {
                 if (err) {
-                    console.log(err)
                     logger.error(err.message, 'userController: validatePassword()', 10)
                     let apiResponse = response.generate(true, 'Login Failed', 500, null)
                     reject(apiResponse)
@@ -443,7 +442,7 @@ let loginFunction = (req, res) => {
 
 
 
-// end of the login function 
+// end of the login function
 
 
 /**
@@ -531,7 +530,7 @@ let resetPasswordFunction = (req, res) => {
             let options = {
                 validationToken: shortid.generate()
             }
-    
+
             UserModel.updateOne({ email: req.body.email }, options).exec((err, result) => {
                 if (err) {
                     console.log(err)
@@ -539,7 +538,7 @@ let resetPasswordFunction = (req, res) => {
                     let apiResponse = response.generate(true, 'Failed To reset user Password', 500, null)
                     reject(apiResponse)
                 }  else {
-    
+
                     //let apiResponse = response.generate(false, 'Password reset successfully', 200, result)
                     resolve(result)
                     //Creating object for sending welcome email
@@ -553,23 +552,23 @@ let resetPasswordFunction = (req, res) => {
                         <br>Please use key to reset your password. <br>
                         <br>
                         <b>Secret Key:<b>
-                        <br>   
-                        <span style="font-size:23px;font-weight:lighter;">${options.validationToken} </span>                                                        
-                      </p>      
-    
+                        <br>
+                        <span style="font-size:23px;font-weight:lighter;">${options.validationToken} </span>
+                      </p>
+
                             <br><b>Lets Meet</b>
                                         `
                     }
-    
+
                     setTimeout(() => {
                         emailLib.sendEmail(sendEmailOptions);
                     }, 2000);
-    
+
                 }
             });// end user model update
-    
+
         });//end promise
-    
+
     }//end reset password
 
     //making promise call
@@ -734,7 +733,7 @@ let changePasswordFunction = (req, res) => {
         })
     }
 
-    //validate old password with database 
+    //validate old password with database
     let validatePassword = (retrievedUserDetails) => {
         console.log("validatePassword");
         console.log(retrievedUserDetails);
@@ -762,7 +761,7 @@ let changePasswordFunction = (req, res) => {
         })
     }
 
-    //password update 
+    //password update
     let passwordUpdate = (userDetails) => {
         return new Promise((resolve, reject) => {
 
@@ -798,7 +797,7 @@ let changePasswordFunction = (req, res) => {
                                     `
                     }
                     console.log(sendEmailOptions)
-                    
+
                     setTimeout(() => {
                         emailLib.sendEmail(sendEmailOptions);
                     }, 2000);
