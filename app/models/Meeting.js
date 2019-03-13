@@ -4,7 +4,7 @@
  */
 const mongoose = require('mongoose'),
   Schema = mongoose.Schema;
- 
+
 let meetingSchema = new Schema({
   meetingId: {
     type: String,
@@ -21,10 +21,14 @@ let meetingSchema = new Schema({
     default: ''
   },
   meetingDate: {
-    type: Date,
+    type: String,
     default: ''
   },
-  timeSlot: {
+  meetingStartTime: {
+    type: String,
+    default: ''
+  },
+  meetingEndTime: {
     type: String,
     default: ''
   },

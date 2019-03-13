@@ -17,20 +17,20 @@ module.exports.setRouter = (app) => {
 
     // params: meetingId.
     app.put(`${baseUrl}/:meetingId/updateMeeting`, auth.isAuthorized, meetingController.updateMeetingFunction);
-   
+
     // params: meetingId.
     app.post(`${baseUrl}/:meetingId/delete`, auth.isAuthorized, meetingController.deleteMeetingFunction);
 
 
 
-    app.get(`${baseUrl}/view/all/meetings/:userId`, auth.isAuthorized, meetingController.getAllMeetingsFunction);
+    app.get(`${baseUrl}/view/all/meetings/:userId/:authToken`,meetingController.getAllMeetingsFunction);
 
 
     // params: meetingId.
     app.get(`${baseUrl}/:meetingId/details`, auth.isAuthorized, meetingController.getMeetingDetailsFunction);
- 
 
-   
+
+
 
 }
 

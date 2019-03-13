@@ -18,9 +18,9 @@ const UserModel = mongoose.model('User')
 
 let getAllMeetingsFunction = (req, res) => {
 
-    let findUserDetails = () => {
+  /*  let findUserDetails = () => {
         return new Promise((resolve, reject) => {
-            UserModel.findOne({ userId: req.params.userId })
+            UserModel.findOne({ "userId": req.params.userId })
                 .select()
                 .lean()
                 .exec((err, userDetails) => {
@@ -28,11 +28,12 @@ let getAllMeetingsFunction = (req, res) => {
                         console.log(err)
                         logger.error(err.message, 'Meeting Controller: findUserDetails', 10)
                         let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
-                        reject(apiResponse)
+                        //reject(apiResponse)
+                        res.send(apiResponse)
                     } else if (check.isEmpty(userDetails)) {
                         logger.info('No User Found', 'Meeting  Controller:v')
                         let apiResponse = response.generate(true, 'No User Found', 404, null)
-                        reject(apiResponse)
+                      //  reject(apiResponse)
                     } else {
                         let apiResponse = response.generate(false, 'User Details Found', 200, userDetails)
                         resolve(userDetails)
@@ -40,13 +41,13 @@ let getAllMeetingsFunction = (req, res) => {
                 })
         })
     }// end finduserDetails
-
-    let findMeetings = (userDetails) => {
-        return new Promise((resolve, reject) => {
+*/
 
 
-            if (userDetails.isAdmin == true) {
-                MeetingModel.find({ hostId: req.params.userId })
+
+
+
+                MeetingModel.find({ "studentId": req.params.userId })
                     .select()
                     .lean()
                     .exec((err, meetingDetails) => {
@@ -54,19 +55,22 @@ let getAllMeetingsFunction = (req, res) => {
                             console.log(err)
                             logger.error(err.message, 'Meeting Controller: findMeetings', 10)
                             let apiResponse = response.generate(true, 'Failed To Find Meetings', 500, null)
-                            reject(apiResponse)
+                          //  reject(apiResponse)
+                          res.send(apiResponse)
                         } else if (check.isEmpty(meetingDetails)) {
                             logger.info('No Meeting Found', 'Meeting  Controller:findMeetings')
                             let apiResponse = response.generate(true, 'No Meeting Found', 404, null)
-                            reject(apiResponse)
+                          //  reject(apiResponse)
+                          res.send(apiResponse)
                         } else {
                             let apiResponse = response.generate(false, 'Meetings Found and Listed', 200, meetingDetails)
-                            resolve(apiResponse)
+                          //  resolve(apiResponse)
+                          res.send(apiResponse)
                         }
                     })
 
-            }
-            else {
+
+/*
                 MeetingModel.find({ participantId: req.params.userId })
                     .select()
                     .lean()
@@ -86,23 +90,11 @@ let getAllMeetingsFunction = (req, res) => {
                         }
                     })
 
-            }
+
 
         })
     }// end findMeetings
-
-
-    findUserDetails(req, res)
-        .then(findMeetings)
-        .then((resolve) => {
-            //let apiResponse = response.generate(false, 'Meetings Found and Listed', 200, resolve)
-            res.send(resolve)
-        })
-        .catch((err) => {
-            console.log(err);
-            res.send(err);
-        })
-
+    */
 }// end getAllMeetingsFunction
 
 
@@ -334,7 +326,7 @@ let addMeetingFunction = (req, res) => {
 
     let validateUserInput = () => {
         return new Promise((resolve, reject) => {
-            if (req.body.studentId && req.body.meetingDate && req.body.timeSlot) {
+            if (req.body.studentId && req.body.meetingDate && req.body.meetingStartTime && req.body.meetingEndTime) {
                 resolve(req)
             } else {
                 logger.error('Field Missing During Meeting Creation', 'meetingController: addMeeting()', 5)
@@ -352,7 +344,9 @@ let addMeetingFunction = (req, res) => {
                 studentId: req.body.studentId,
                 studentName: req.body.studentName,
                 meetingDate: req.body.meetingDate,
-                timeSlot: req.body.timeSlot,
+                //timeSlot: req.body.timeSlot,
+                meetingStartTime: req.body.meetingStartTime,
+                meetingEndTime: req.body.meetingEndTime,
                 createdOn: time.now()
             })
 
