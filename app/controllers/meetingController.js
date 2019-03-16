@@ -155,7 +155,7 @@ let deleteMeetingFunction = (req, res) => {
     let deleteMeeting = (meetingDetails) => {
         return new Promise((resolve, reject) => {
 
-            MeetingModel.findOneAndRemove({ meetingId: req.params.meetingId })
+            MeetingModel.findOneAndRemove({ 'meetingId': req.params.meetingId })
             .exec((err, result) => {
                 if (err) {
                     console.log(err)
@@ -168,22 +168,6 @@ let deleteMeetingFunction = (req, res) => {
                     reject(apiResponse)
                 } else {
                     let newMeetingObj = meetingDetails;
-
-                    let sendEmailOptions = {
-                        email: newMeetingObj.participantEmail,
-                        name: newMeetingObj.participantName,
-                        subject: `Your Meeting Has Been Canceled: ${newMeetingObj.meetingTopic}`,
-                        html: `<h3> Meeting Canceled </h3>
-                              <br> Hi , ${newMeetingObj.participantName} .
-                              <br> ${newMeetingObj.hostName} canceled the meeting: ${newMeetingObj.meetingTopic}.
-                            `
-                    }
-
-                    setTimeout(() => {
-                        emailLib.sendEmail(sendEmailOptions);
-                    }, 2000);
-
-
                     let apiResponse = response.generate(false, 'Deleted the Meeting successfully', 200, result)
                     resolve(result)
                 }
@@ -241,7 +225,8 @@ let updateMeetingFunction = (req, res) => {
         return new Promise((resolve, reject) => {
 
             let options = req.body;
-            MeetingModel.update({ "meetingId": req.params.meetingId }, options)
+            console.log("----------------------------------------------", req.body)
+            MeetingModel.updateOne({ "meetingId": req.params.meetingId }, options)
             .exec((err, result) => {
                 if (err) {
                     console.log(err)
@@ -255,43 +240,6 @@ let updateMeetingFunction = (req, res) => {
                 } else {
 
                     let newMeetingObj = meetingDetails;
-                /*     let sendEmailOptions = {
-                        email: newMeetingObj.participantEmail,
-                        name: newMeetingObj.participantName,
-                        subject: `Your Meeting Has Been Updated: ${options.meetingTopic}`,
-                        html: `<h3> Your meeting has been modified! </h3>
-                              <br> Hi , ${newMeetingObj.participantName} .
-                              <br> ${newMeetingObj.hostName} Updated the meeting: ${options.meetingTopic}.
-                              <br>
-
-                              <div class="card" style="width: 18rem;">
-                                  <div class="card-body">
-                                      <h5 class="card-title">Agenda</h5>
-                                      <p class="card-text">${options.meetingDescription}</p>
-                                  </div>
-                              </div>
-
-                              <div class="card" style="width: 18rem;">
-                                  <div class="card-body">
-                                      <h5 class="card-title">When</h5>
-                                      <p class="card-text">${options.meetingStartDate}</p>
-                                  </div>
-                              </div>
-
-                              <div class="card" style="width: 18rem;">
-                                  <div class="card-body">
-                                      <h5 class="card-title">Where</h5>
-                                      <p class="card-text">${options.meetingPlace}</p>
-                                  </div>
-                              </div>
-
-                              `
-                    }
-
-                    setTimeout(() => {
-                        emailLib.sendEmail(sendEmailOptions);
-                    }, 2000); */
-
 
                     let apiResponse = response.generate(false, 'Meeting details Updated', 200, result)
                     resolve(result)
@@ -419,8 +367,46 @@ let addMeetingFunction = (req, res) => {
 
 }// end addMeetingFunction
 
-
-
+let getPendingMeetings = (req, res) => {
+  MeetingModel.find({"isAccepted" : false })
+  .select()
+  .lean()
+  .exec((err, meetingDetails) => {
+      if (err) {
+          console.log(err)
+          logger.error(err.message, 'Meeting Controller: getAllUsersMeetings', 10)
+          let apiResponse = response.generate(true, 'Failed To Find Meetings', 500, null)
+          res.send(apiResponse)
+      } else if (check.isEmpty(meetingDetails)) {
+          logger.info('No Meeting Found', 'Meeting  Controller:getAllUsersMeetings')
+          let apiResponse = response.generate(true, 'No Meeting Found', 404, null)
+          res.send(apiResponse)
+      } else {
+          let apiResponse = response.generate(false, 'Meeting Found', 200, meetingDetails)
+          res.send(apiResponse)
+      }
+  })
+}
+  let listAllMeetings = (req, res) => {
+    MeetingModel.find()
+    .select()
+    .lean()
+    .exec((err, meetingDetails) => {
+        if (err) {
+            console.log(err)
+            logger.error(err.message, 'Meeting Controller: listAllMeetings', 10)
+            let apiResponse = response.generate(true, 'Failed To Find Meetings', 500, null)
+            res.send(apiResponse)
+        } else if (check.isEmpty(meetingDetails)) {
+            logger.info('No Meeting Found', 'Meeting  Controller: listAllMeetings')
+            let apiResponse = response.generate(true, 'No Meeting Found', 404, null)
+            res.send(apiResponse)
+        } else {
+            let apiResponse = response.generate(false, 'Meeting Found', 200, meetingDetails)
+            res.send(apiResponse)
+        }
+    })
+  }
 
 
 module.exports = {
@@ -428,6 +414,8 @@ module.exports = {
     updateMeetingFunction: updateMeetingFunction,
     deleteMeetingFunction: deleteMeetingFunction,
     getAllMeetingsFunction:getAllMeetingsFunction,
-    getMeetingDetailsFunction:getMeetingDetailsFunction
+    getMeetingDetailsFunction:getMeetingDetailsFunction,
+   getPendingMeetings:getPendingMeetings,
+   listAllMeetings: listAllMeetings
 
 }// end exports

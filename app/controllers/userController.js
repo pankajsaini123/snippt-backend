@@ -227,7 +227,7 @@ let signUpFunction = (req, res) => {
                         logger.error(err.message, 'userController: createUser', 10)
                         let apiResponse = response.generate(true, 'Failed To Create User', 500, null)
                         reject(apiResponse)
-                    } else if (check.isEmpty(retrievedUserDetails)) { 
+                    } else if (check.isEmpty(retrievedUserDetails)) {
                         console.log(req.body)
                         let newUser = new UserModel({
                             userId: shortid.generate(),
@@ -235,7 +235,7 @@ let signUpFunction = (req, res) => {
                             lastName: req.body.lastName || '',
                             userName: req.body.userName,
                             email: req.body.email.toLowerCase(),
-                            isAdmin: req.body.isAdmin,
+                            isAlumni: req.body.isAlumni,
                             password: passwordLib.hashpassword(req.body.password),
                             createdOn: time.now()
                         })

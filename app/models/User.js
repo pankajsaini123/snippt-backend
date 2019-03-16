@@ -32,7 +32,7 @@ let userSchema = new Schema({
     type: String,
     default: ''
   },
-  isAdmin: {
+  isAlumni: {
     type: Boolean,
     default: false
   },
@@ -40,7 +40,7 @@ let userSchema = new Schema({
     type:Date,
     default:""
   }
-  
+
 
 
 })

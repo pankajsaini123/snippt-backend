@@ -14,7 +14,7 @@ module.exports.setRouter = (app) => {
 
     app.post(`${baseUrl}/addMeeting`, auth.isAuthorized, meetingController.addMeetingFunction);
 
-
+    app.get(`${baseUrl}/get/all/meetings`, auth.isAuthorized, meetingController.listAllMeetings)
     // params: meetingId.
     app.put(`${baseUrl}/:meetingId/updateMeeting`, auth.isAuthorized, meetingController.updateMeetingFunction);
 
@@ -29,6 +29,7 @@ module.exports.setRouter = (app) => {
     // params: meetingId.
     app.get(`${baseUrl}/:meetingId/details`, auth.isAuthorized, meetingController.getMeetingDetailsFunction);
 
+    app.get(`${baseUrl}/check/pending/meetings`, auth.isAuthorized, meetingController.getPendingMeetings);
 
 
 
