@@ -11,7 +11,7 @@ let generateToken = (data, cb) => {
       iat: Date.now(),
       exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24),
       sub: 'authToken',
-      iss: 'letsMeetApp',
+      iss: 'CodeApp',
       data: data
     }
     let tokenDetails = {
@@ -23,27 +23,27 @@ let generateToken = (data, cb) => {
     console.log(err)
     cb(err, null)
   }
-}// end generate token 
+}// end generate token
 
 let verifyClaim = (token,secretKey,cb) => {
   // verify a token symmetric
   jwt.verify(token, secretKey, function (err, decoded) {
     if(err){
       console.log("error while verify token");
-      console.log(err);
+    //  console.log(err);
       cb(err,null)
     }
     else{
       console.log("user verified");
-      console.log(decoded);
+      //console.log(decoded);
       cb(null,decoded);
-    }  
- 
- 
-  }); 
+    }
 
 
-}// end verify claim 
+  });
+
+
+}// end verify claim
 
 let verifyClaimWithoutSecret = (token,cb) => {
   // verify a token symmetric
@@ -56,13 +56,13 @@ let verifyClaimWithoutSecret = (token,cb) => {
     else{
       console.log("user verified");
       cb (null,decoded)
-    }  
- 
- 
+    }
+
+
   });
 
 
-}// end verify claim 
+}// end verify claim
 
 
 
